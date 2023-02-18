@@ -1,6 +1,8 @@
 const express = require('express');
 const multer = require('multer');
 
+const { verifyUserToken } = require('../../middlewares');
+
 const {
   uploadFile,
   getFileInfo,
@@ -15,22 +17,22 @@ const upload = multer();
 
 /* ---------- GET ---------- */
 
-router.get('/list', getFileList);
+router.get('/list', verifyUserToken, getFileList);
 
-router.get('/:id', getFileInfo);
+router.get('/:id', verifyUserToken, getFileInfo);
 
-router.get('/download/:id', downloadFile);
+router.get('/download/:id', verifyUserToken, downloadFile);
 
 /* ---------- PUT ---------- */
 
-router.put('/update/:id', upload.single('file'), updateFile);
+router.put('/update/:id', verifyUserToken, upload.single('file'), updateFile);
 
 /* ---------- POST ---------- */
 
-router.post('/upload', upload.single('file'), uploadFile);
+router.post('/upload', verifyUserToken, upload.single('file'), uploadFile);
 
 /* ---------- DELETE ---------- */
 
-router.delete('/delete/:id', deleteFile);
+router.delete('/delete/:id', verifyUserToken, deleteFile);
 
 module.exports = router;
