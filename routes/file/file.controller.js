@@ -64,6 +64,7 @@ module.exports = {
 
     const extension = result?.[0]?.extension;
     if (!extension) return res.sendStatus(400);
+
     const filePath = `${fileFolderName}/${id}.${extension}`;
     await fs.unlink(filePath);
 
@@ -71,5 +72,28 @@ module.exports = {
     await createSqlQueryTemplate(deleteFileQuery);
 
     res.sendStatus(200);
+  },
+  async getFileList(req, res) {
+    const { list_size = 10, page } = req.body;
+
+    const offset = (page - 1) * list_size;
+
+    const query = `SELECT * FROM files LIMIT ${list_size} offset ${offset}`;
+    const { result } = await createSqlQueryTemplate(query);
+
+    res.status(200).send({ result });
+  },
+  async downloadFile(req, res) {
+    const { id } = req.params;
+
+    const getFileQuery = `SELECT extension FROM files where id = '${id}'`;
+    const { result } = await createSqlQueryTemplate(getFileQuery);
+
+    const extension = result?.[0]?.extension;
+    if (!extension) return res.sendStatus(400);
+
+    const filePath = `${fileFolderName}/${id}.${extension}`;
+
+    res.download(filePath);
   },
 };

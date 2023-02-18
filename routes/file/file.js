@@ -6,6 +6,8 @@ const {
   getFileInfo,
   updateFile,
   deleteFile,
+  getFileList,
+  downloadFile,
 } = require('./file.controller');
 
 const router = express.Router();
@@ -13,7 +15,11 @@ const upload = multer();
 
 /* ---------- GET ---------- */
 
+router.get('/list', getFileList);
+
 router.get('/:id', getFileInfo);
+
+router.get('/download/:id', downloadFile);
 
 /* ---------- PUT ---------- */
 
